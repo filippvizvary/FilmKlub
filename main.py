@@ -37,6 +37,9 @@ hodnotenia = [
 while True:
     prikaz=input('Enter command(type help for commands): ')
     if prikaz=='help':
-        print('V-list all movies\nH-rate a movie\nA-Add a movie\nF-filter by genre\nQ-quit')
+        print('V-list all movies\nH-rate a movie\nA-Add a movie\nF-filter by genre\nY-filter by year\nZ-list genres\nT-top movies\nS-search movies\nM-my genres\nR-recommend movies\nP-profile\nQ-quit')
 
-    
+    #ahoj
+
+
+
