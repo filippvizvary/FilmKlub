@@ -39,4 +39,4 @@ while True:
     if prikaz=='help':
         print('V-list all movies\nH-rate a movie\nA-Add a movie\nF-filter by genre\nQ-quit')
 
-    
+    #ejoifwdflsfslk
