@@ -1,4 +1,4 @@
-filmy = [ 
+movies = [ 
     ("Inception",        "sci-fi",   2010, 148, 8.8), 
     ("Parasite",         "thriller", 2019, 132, 8.6), 
     ("Spirited Away",    "anime",    2001, 125, 8.6), 
@@ -16,7 +16,7 @@ filmy = [
     ("The Grand Budapest Hotel","comedy",2014,99, 8.1),
 ]
 
-hodnotenia = [ 
+ratings = [ 
     ("Jana",  "Inception",     9), 
     ("Jana",  "The Matrix",    10), 
     ("Mia",   "Parasite",      10), 
@@ -34,122 +34,219 @@ hodnotenia = [
     ("Tomas", "Interstellar",  10), 
 ]
 
+my_genres = set()
+
 while True:
-    prikaz=input('Enter command(type help for commands): ').strip().lower()
-    if prikaz=='help':
-        print('V-list all movies\nH-rate a movie\nA-Add a movie\nF-filter by genre\nY-filter by year\nZ-list genres\nT-top movies\nS-search movies\nM-my genres\nR-recommend movies\nP-profile\nQ-quit')
+    command=input('Enter command(type help for commands): ').strip().lower()
+    if command=='help':
+        print('V-list allmovies\nH-rate a movie\nA-Add a movie\nF-filter by genre\nY-filter by year\nZ-list genres\nT-top movies\nS-search movies\nM-my genres\nR-recommend movies\nP-profile\nQ-quit')
 
-    if prikaz=='v':
-        for i in range(len(filmy)):
-            print(f'{i+1}. {filmy[i][0]} ({filmy[i][2]}) - {filmy[i][1]} - {filmy[i][3]} min - Rating: {filmy[i][4]}')
+    if command=='v':
+        for i in range(len(movies)):
+            print(f'{i+1}. {movies[i][0]} ({movies[i][2]}) - {movies[i][1]} - {movies[i][3]} min - Rating: {movies[i][4]}')
 
-    if prikaz=='h':
-        meno=input('Enter your name: ').strip().capitalize()
-        nazov=input('Enter movie name: ').strip().capitalize()
-        hodnotenie=int(input('Enter rating (1-10): ')).strip()
-        hodnotenia.append((meno, nazov, hodnotenie))
-        print(f'Rating added: {meno} rated {nazov} with {hodnotenie}/10')
+    if command=='h':
+        member_name=input('Enter your name: ').strip().capitalize()
+        title=input('Enter movie name: ').strip().capitalize()
+        found=False
+        for movie in movies:
+            if movie[0]==title:
+                found=True
+                break
+        if not found:
+            print('Movie npt found')
+        else:
+            while True:
+                rating_str=input('Enter rating (1-10): ').strip()
+                if rating_str.isdigit():
+                    rating_value=int(rating_str)
+                    if rating_value>=1 and rating_value<=10:
+                        break
+                print('Please enter a number between 1 and 10')
+            ratings.append((member_name, title, rating_value))
+            print(f'Rating added: {member_name} rated {title} with {rating_value}/10')
 
-    if prikaz=='a':
-        nazov=input('Enter movie name: ').strip().capitalize()
-        zaner=input('Enter genre: ').strip().lower()
-        rok=int(input('Enter release year: ')).strip()
-        dlzka=int(input('Enter duration (minutes): ')).strip()
-        rating=float(input('Enter rating (1-10): ')).strip()
-        filmy.append((nazov, zaner, rok, dlzka, rating))
-        print(f'Movie added: {nazov} ({rok}) - {zaner} - {dlzka} min - Rating: {rating}')
+    if command == 'a':
+        title=input('Enter movie name: ').strip().capitalize()
+        genre=input('Enter genre: ').strip().lower()
+        while True:
+            year_str=input('Enter release year (1900-2025): ').strip()
+            if year_str.isdigit():
+                year=int(year_str)
+                if year>=1900 and year<=2025:
+                    break
+            print('Please enter a year between 1900 and 2025')
+        while True:
+            duration_str=input('Enter duration (minutes): ').strip()
+            if duration_str.isdigit():
+                duration=int(duration_str)
+                if duration>0:
+                    break
+            print('Please enter a positive number')
+        while True:
+            rating_str=input('Enter rating (1.0-10.0): ').strip()
+            is_valid_float = False
+            if rating_str.isdigit():
+                is_valid_float = True
+            elif rating_str.count('.') == 1:
+                parts = rating_str.split('.')
+                if parts[0].isdigit() and parts[1].isdigit():
+                    is_valid_float = True
+            
+            if is_valid_float:
+                rating_value=float(rating_str)
+                if rating_value>=1.0 and rating_value<=10.0:
+                    break
+            print('Please enter a number between 1.0 and 10.0')
+        movies.append((title, genre, year, duration, rating_value))
+        print(f'Movie added: {title} ({year}) - {genre} - {duration} min - Rating: {rating_value}')
 
-    if prikaz=='f':
-        sorted_filmy = []
-        zaner=input('Enter genre to filter by: ').strip().lower()
-        for film in filmy:
-            if film[1].lower() == zaner:
-                sorted_filmy.append(film)
-        for film in sorted_filmy:
-            print(f'{film[0]} ({film[2]}) - {film[1]} - {film[3]} min - Rating: {film[4]}')
-        if len(sorted_filmy) == 0:
-            print(f'No movies found in genre: {zaner}')
+    if command=='f':
+        filtered_movies = []
+        genre=input('Enter genre to filter by: ').strip().lower()
+        for movie in movies:
+            if movie[1].lower() == genre:
+                filtered_movies.append(movie)
+        for movie in filtered_movies:
+            print(f'{movie[0]} ({movie[2]}) - {movie[1]} - {movie[3]} min - Rating: {movie[4]}')
+        if len(filtered_movies) == 0:
+            print(f'No movies found in genre: {genre}')
 
+    if command=='y':
+        while True:
+            start_year_str=input('Enter start year: ').strip()
+            if start_year_str.isdigit():
+                start_year=int(start_year_str)
+                break
+            print('Please enter a valid year')
+        while True:
+            end_year_str=input('Enter end year: ').strip()
+            if end_year_str.isdigit():
+                end_year=int(end_year_str)
+                break
+            print('Please enter a valid year')
+        filtered_movies = []
+        for movie in movies:
+            if movie[2]>=start_year and movie[2]<=end_year:
+                filtered_movies.append(movie)
+        for movie in filtered_movies:
+            print(f'{movie[0]} ({movie[2]}) - {movie[1]} - {movie[3]} min - Rating: {movie[4]}')
+        if len(filtered_movies) == 0:
+            print(f'No movies found between {start_year} and {end_year}')
     
-    if prikaz=='y':
-        sorted_filmy = []
-        rok=int(input('Enter release year to filter by: ').strip())
-        for film in filmy:
-            if film[2] == rok:
-                sorted_filmy.append(film)
-        for film in sorted_filmy:
-            print(f'{film[0]} ({film[2]}) - {film[1]} - {film[3]} min - Rating: {film[4]}')
-        if len(sorted_filmy) == 0:
-            print(f'No movies found from year: {rok}')
-    
-    if prikaz=='z':
-        zanre = set(film[1] for film in filmy)
+
+    if command=='z':
+        genres = set()
+        for movie in movies:
+            genres.add(movie[1])
+        sorted_genres = sorted(genres)
         print('Available genres:')
-        for zaner in zanre:
-            print(f' - {zaner}')
+        for genre in sorted_genres:
+            print(f' - {genre}')
 
-    if prikaz=='t':
-        top_filmy = sorted(filmy, key=lambda x: x[4], reverse=True)[:5]
+    if command=='t':
+        top_movies = []
+        for movie in movies:
+            top_movies.append((movie[4], movie[0], movie[1], movie[2], movie[3]))
+        for i in range(len(top_movies)-1):
+            for j in range(len(top_movies)-i-1):
+                if top_movies[j][0] < top_movies[j+1][0]:
+                    temp_item = top_movies[j]
+                    top_movies[j] = top_movies[j+1]
+                    top_movies[j+1] = temp_item
         print('Top 5 movies:')
-        for film in top_filmy:
-            print(f'{film[0]} ({film[2]}) - {film[1]} - {film[3]} min - Rating: {film[4]}')
+        counter=0
+        for movie_item in top_movies:
+            if counter<5:
+                print(f'{movie_item[1]} ({movie_item[3]}) - {movie_item[2]} - {movie_item[4]} min - Rating: {movie_item[0]}')
+                counter=counter+1
 
-    if prikaz=='s':
-        search_term = input('Enter movie name to search for: ').strip().lower()
-        found_filmy = [film for film in filmy if search_term in film[0].lower()]
-        if found_filmy:
+    if command=='s':
+        search_term = input('Enter movie name to seaech for: ').strip().lower()
+        found_movies = []
+        for movie in movies:
+            if search_term in movie[0].lower():
+                found_movies.append(movie)
+        if len(found_movies)>0:
             print('Search results:')
-            for film in found_filmy:
-                print(f'{film[0]} ({film[2]}) - {film[1]} - {film[3]} min - Rating: {film[4]}')
+            for movie in found_movies:
+                print(f'{movie[0]} ({movie[2]}) - {movie[1]} - {movie[3]} min - Rating: {movie[4]}')
         else:
             print(f'No movies found with name containing: {search_term}')
 
-    if prikaz=='m':
-        meno=input('Enter your name: ').strip().capitalize()
-        user_ratings = [h for h in hodnotenia if h[0] == meno]
-        if user_ratings:
-            genres = set()
-            for rating in user_ratings:
-                movie_name = rating[1]
-                for film in filmy:
-                    if film[0] == movie_name:
-                        genres.add(film[1])
-            print(f'{meno}\'s favorite genres:')
-            for genre in genres:
+    if command=='m':
+        sub_command=input('P=add genre, O=remove genre, V=view, S=back: ').strip().lower()
+        if sub_command=='p':
+            genre=input('Enter genre to add: ').strip().lower()
+            my_genres.add(genre)
+            print(f'Added {genre} to your genres')
+        elif sub_command=='o':
+            genre=input('Enter genre to remove: ').strip().lower()
+            my_genres.discard(genre)
+            print(f'Removed {genre} from your genres')
+        elif sub_command=='v':
+            print('Your favorite genres:')
+            for genre in my_genres:
                 print(f' - {genre}')
-        else:
-            print(f'No ratings found for user: {meno}')
+        elif sub_command=='s':
+            pass
 
-    if prikaz=='r':
-        meno=input('Enter your name: ').strip().capitalize()
-        user_ratings = [h for h in hodnotenia if h[0] == meno]
-        if user_ratings:
-            genres = set()
-            for rating in user_ratings:
-                movie_name = rating[1]
-                for film in filmy:
-                    if film[0] == movie_name:
-                        genres.add(film[1])
-            recommended_films = [film for film in filmy if film[1] in genres and film[0] not in [r[1] for r in user_ratings]]
-            if recommended_films:
-                print(f'Movies recommended for {meno}:')
-                for film in recommended_films:
-                    print(f'{film[0]} ({film[2]}) - {film[1]} - {film[3]} min - Rating: {film[4]}')
+    if command=='r':
+        if len(my_genres)==0:
+            print('No favorite genres selected. Use M command to add genres.')
+        else:
+            recommended_movies = []
+            for movie in movies:
+                if movie[1] in my_genres and movie[4]>=7.5:
+                    recommended_movies.append(movie)
+            if len(recommended_movies)>0:
+                print('Recommended movies:')
+                for movie in recommended_movies:
+                    print(f'{movie[0]} ({movie[2]}) - {movie[1]} - {movie[3]} min - Rating: {movie[4]}')
             else:
-                print(f'No recommendations available for {meno}')
-        else:
-            print(f'No ratings found for user: {meno}')
+                print('No recommendations available')
 
-    if prikaz=='p':
-        meno=input('Enter your name: ').strip().capitalize()
-        user_ratings = [h for h in hodnotenia if h[0] == meno]
-        if user_ratings:
-            print(f'{meno}\'s profile:')
-            for rating in user_ratings:
-                print(f' - {rating[1]}: {rating[2]}/10')
+    if command=='p':
+        member_name=input('Enter your name: ').strip().capitalize()
+        user_ratings = []
+        for rating_entry in ratings:
+            if rating_entry[0]==member_name:
+                user_ratings.append(rating_entry)
+        if len(user_ratings)>0:
+            print(f'{member_name}\'s profile:')
+            total_rating=0
+            for rating_entry in user_ratings:
+                print(f' - {rating_entry[1]}: {rating_entry[2]}/10')
+                total_rating=total_rating+rating_entry[2]
+            average_rating=total_rating/len(user_ratings)
+            print(f'Average rating: {average_rating}')
         else:
-            print(f'No ratings found for user: {meno}')
+            print(f'No ratings found for user: {member_name}')
 
-    if prikaz=='q':
+    if command=='?':
+        print('=== Most Active Critic ===')
+        all_members = set()
+        for rating_entry in ratings:
+            all_members.add(rating_entry[0])
+        max_rating_count=0
+        most_active_member=''
+        average_rating=0
+        for member in all_members:
+            rating_count=0
+            total_rating=0
+            for rating_entry in ratings:
+                if rating_entry[0]==member:
+                    rating_count=rating_count+1
+                    total_rating=total_rating+rating_entry[2]
+            if rating_count>0:
+                member_average=total_rating/rating_count
+                if rating_count>max_rating_count:
+                    max_rating_count=rating_count
+                    most_active_member=member
+                    average_rating=member_average
+        print(f'Most active: {most_active_member} ({max_rating_count} ratings, avg: {average_rating:.1f})')
+
+    if command=='q':
         print('Goodbye!')
         break
+
